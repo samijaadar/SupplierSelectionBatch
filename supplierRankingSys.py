@@ -7,7 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.neural_network import MLPRegressor
-import streamlit as st
 
 import pdfGenerator
 from mailSender import send_email
