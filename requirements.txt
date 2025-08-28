@@ -1,7 +1,7 @@
 markdown
 reportlab
-xgboost
 openai
 boto3==1.40.16
 numpy==2.3.2
 pandas==2.3.2
+scikit-learn
