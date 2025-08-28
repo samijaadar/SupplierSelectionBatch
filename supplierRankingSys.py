@@ -3,7 +3,6 @@ import random
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.neural_network import MLPRegressor
@@ -13,13 +12,16 @@ from mailSender import send_email
 from genAi import generate_perturbation
 from rankingUtils import compare_supplier_rankings, calculate_fr
 
+def standard_scaler(X):
+    mean = np.mean(X, axis=0)
+    std = np.std(X, axis=0)
+    return (X - mean) / std
 
 class SupplierRankingSystem:
     def __init__(self, beneficial_criteria, non_beneficial_criteria, weights, models=None):
         self.beneficial_criteria = set(beneficial_criteria)
         self.non_beneficial_criteria = set(non_beneficial_criteria)
         self.weights = weights
-        self.scaler = StandardScaler()
         self.models = models or {
             #'random_forest': RandomForestRegressor(n_estimators=100, random_state=42),
             'xgboost': XGBRegressor(random_state=42),
@@ -28,7 +30,7 @@ class SupplierRankingSystem:
 
     def prepare_data(self, df):
         numeric_cols = df.select_dtypes(include=[np.number]).columns
-        X_scaled = self.scaler.fit_transform(df[numeric_cols])
+        X_scaled = standard_scaler(df[numeric_cols])
         return pd.DataFrame(X_scaled, columns=numeric_cols), numeric_cols
 
     def train_models(self, X, y):
@@ -54,7 +56,6 @@ class SupplierRankingSystem:
         valid_weights = {k: v for k, v in self.weights.items() if k in results.columns}
         total_weight = sum(valid_weights.values())
         if total_weight == 0:
-            st.error("Weights sum to zero. Please assign weights.")
             return pd.DataFrame()
         normalized_weights = {k: v / total_weight for k, v in valid_weights.items()}
 
