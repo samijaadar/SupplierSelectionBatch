@@ -54,7 +54,7 @@ class SupplierRankingSystem:
         normalized_weights = {k: v / total_weight for k, v in valid_weights.items()}
 
         results['Score'] = sum(results[col] * weight for col, weight in normalized_weights.items())
-
+        results['Score'] = results['Score'].round(2)
         return results.sort_values('Score').reset_index(drop=True)
 
     def analyze_individual_supplier_perturbations(self, original_df, original_rankings, perturbation_data):
