@@ -1,4 +1,5 @@
 markdown
+matplotlib
 reportlab
 openai
 boto3==1.40.16
